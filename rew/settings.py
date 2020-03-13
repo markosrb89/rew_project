@@ -24,9 +24,11 @@ SECRET_KEY = 'ka@ccfzt51)tt$l)ixn!9i*ted!ko)2*%-#o##6nil2)i-&p%e'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
+DOCKER = os.getenv('DOCKER', default=False)
 
-ALLOWED_HOSTS = []
-
+if DEBUG:
+   # This value is not safe for production usage. Refer to the Django documentation for more information.
+   ALLOWED_HOSTS = ['*']
 
 # Application definition
 
@@ -79,7 +81,19 @@ WSGI_APPLICATION = 'rew.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
-DATABASES = {
+if DOCKER:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': 'postgres',
+            'USER': 'postgres',
+            'PASSWORD': 'polako89',
+            'HOST': 'db',
+            'PORT': 5432,
+        }
+    }
+else:
+    DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'rewdb',
